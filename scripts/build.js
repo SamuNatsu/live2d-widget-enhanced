@@ -7,12 +7,30 @@ import terser from '@rollup/plugin-terser';
 import typescript from '@rollup/plugin-typescript';
 
 import { rollup } from 'rollup';
+import { createFilter } from '@rollup/pluginutils';
+
+// SVG loader
+/** @returns {import('rollup').Plugin} */
+function svgLoader() {
+  const filter = createFilter('**/*.svg');
+  return {
+    name: 'svg-loader',
+    transform(code, id) {
+      if (filter(id)) {
+        return {
+          code: `export default ${JSON.stringify(code)}`,
+          map: { mappings: '' }
+        };
+      }
+    }
+  };
+}
 
 // Build autoload.min.js
 {
   const bundle = await rollup({
     input: 'src/autoload.ts',
-    plugins: [json(), typescript(), nodeResolve()]
+    plugins: [json(), svgLoader(), typescript(), nodeResolve()]
   });
 
   await bundle.write({
@@ -30,7 +48,7 @@ import { rollup } from 'rollup';
 {
   const bundle = await rollup({
     input: 'src/core.ts',
-    plugins: [json(), typescript(), nodeResolve()]
+    plugins: [json(), svgLoader(), typescript(), nodeResolve()]
   });
 
   await bundle.write({

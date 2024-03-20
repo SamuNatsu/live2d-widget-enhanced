@@ -53,6 +53,7 @@
   position: absolute;
   text-overflow: ellipsis;
   transition: opacity 1s;
+  user-select: none;
   width: 250px;
   word-break: break-all;
 }

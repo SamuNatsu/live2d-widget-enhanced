@@ -9,6 +9,7 @@ import {
 } from './utils';
 import { version } from '../package.json';
 import { showMsg } from './message';
+import { tools } from './tools';
 
 // Types
 export type Tips = {
@@ -40,6 +41,13 @@ export type WidgetInitOptions = {
   api: IApi;
   tips: string | Tips;
   titleSeparator?: string;
+  tools?: Record<
+    string,
+    {
+      icon: string;
+      callback: Function;
+    }
+  >;
   defaultModel?: number;
   defaultTexture?: number;
 };
@@ -151,6 +159,27 @@ function startup(opt: WidgetInitOptions): void {
     document.querySelector<HTMLDivElement>('#waifu')!.style.bottom = '0';
   }, 0);
 
+  // Register tools
+  if (opt.tools === undefined) {
+    opt.tools = tools;
+  }
+  opt.tools['switch-model'].callback = (): Promise<void> =>
+    model.loadNextModel();
+  opt.tools['switch-texture'].callback = (): Promise<void> =>
+    model.loadNextTexture();
+  for (const tool of Object.keys(opt.tools)) {
+    const { icon, callback } = opt.tools[tool];
+    document
+      .querySelector('#waifu-tool')!
+      .insertAdjacentHTML(
+        'beforeend',
+        `<span id="waifu-tool-${tool}">${icon}</span>`
+      );
+    document
+      .querySelector(`#waifu-tool-${tool}`)!
+      .addEventListener('click', (): void => callback());
+  }
+
   // Get model ID & texture ID
   const mid: number = parseInt(
     localStorage.getItem('modelId') ?? opt.defaultModel?.toString() ?? '0'
@@ -162,7 +191,7 @@ function startup(opt: WidgetInitOptions): void {
   );
 
   // Load model
-  model.loadModel(mid, tid, '');
+  model.loadModel(mid, tid);
 
   // Load tips
   if (typeof opt.tips === 'object') {
@@ -233,12 +262,6 @@ function regEvListeners(opt: WidgetInitOptions, data: Tips): void {
       if (el.closest(selector) === null) {
         continue;
       }
-
-      // Check & update last hover element
-      if (lastHoverElement === selector) {
-        return;
-      }
-      lastHoverElement = selector;
 
       // Show message
       let showText: string = sample(text);

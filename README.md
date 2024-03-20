@@ -14,7 +14,7 @@
 1. 完全使用 TypeScript 编写，便于开发与维护
 2. 将模型加载 API 抽象成接口，使得用户可以自行实现和适配，而不需要严格遵守 FGHRSH 的 API 和 CDN 部署规范
 3. 兼容 FGHRSH 提供的 API 和 CDN
-4. 提供了大量客户端 API，使得用户不需要 Node 环境定制源代码，仅通过客户端 JS 也能实现灵活强大的功能
+4. 简化了组件定制，可以通过传入简单的配置对象来配置组件
 5. 去掉了 [WebsiteAsteroids](http://www.websiteasteroids.com) 彩蛋，因为几乎没人玩它，且在看板娘中它不会显示帮助信息，也没人知道怎么操作
 
 你可以查看示例网页：[Demo](https://samunatsu.github.io/live2d-widget-enhanced/)
@@ -72,46 +72,49 @@ l2dwe.init(opt);
 
 |选项|类型|默认值|说明|
 |:---|:---:|:---:|:---|
-|`api`|`IApi`|`l2dwe.ApiFactory.default()`|API 接口对象|
-|`target`|`string`|-|一个选择器字符串，指定组件将要替换的元素。若不指定则组件将注入到 `body` 元素中|
+|`resource`|`?string`|-|组件资源目录，若未指定则以 `core.min.js` 所在目录作为资源目录|
+|`api`|`IApi`|-|API 接口对象|
 |`tips`|`string\|object`|-|`waifu-tips.json` 文件路径。若提供的是一个对象，则直接使用该对象作为 `waifu-tips.json` 内容|
+|`titleSeparator`|`string`|` - `|标题分隔符，用于将文章标题中的站点名称去除，只提取文章标题|
+|`tools`|`?object`|-|自定义组件工具栏|
+|`defaultModel`|`number`|`0`|默认模型 ID|
+|`defaultTexture`|`number`|`0`|默认贴图 ID|
 
-## 以下是原始 README.md
+### API 对象
 
-## 配置
+核心提供了 PHP 风格的 API 对象封装以及 CDN 风格的 API 对象封装，你可以通过如下代码来创建对象：
 
-你可以对照 `autoload.js` 的源码查看可选的配置项目。`autoload.js` 会自动加载三个文件：`waifu.css`，`live2d.min.js` 和 `waifu-tips.js`。`waifu-tips.js` 会创建 `initWidget` 函数，这就是加载看板娘的主函数。`initWidget` 函数接收一个 Object 类型的参数，作为看板娘的配置。以下是配置选项：
+```js
+// PHP API
+new l2dwe.RemoteApi('https://live2d.fghrsh.net/api');
 
-| 选项 | 类型 | 默认值 | 说明 |
-| - | - | - | - |
-| `waifuPath` | `string` | `https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/waifu-tips.json` | 看板娘资源路径，可自行修改 |
-| `apiPath` | `string` | `https://live2d.fghrsh.net/api/` | API 路径，可选参数 |
-| `cdnPath` | `string` | `https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/` | CDN 路径，可选参数 |
-| `tools` | `string[]` | 见 `autoload.js` | 加载的小工具按钮，可选参数 |
-
-其中，`apiPath` 和 `cdnPath` 两个参数设置其中一项即可。`apiPath` 是后端 API 的 URL，可以自行搭建，并增加模型（需要修改的内容比较多，此处不再赘述），可以参考 [live2d_api](https://github.com/fghrsh/live2d_api)。而 `cdnPath` 则是通过 jsDelivr 这样的 CDN 服务加载资源，更加稳定。
-
-## 自定义
-
-如果以上「配置」部分提供的选项还不足以满足你的需求，那么你可以自己进行修改。本仓库的目录结构如下：
-
-- `src/waifu-tips.js` 包含了按钮和对话框的逻辑；
-- `waifu-tips.js` 是由 `src/waifu-tips.js` 自动打包生成的，不建议直接修改；
-- `waifu-tips.json` 中定义了触发条件（`selector`，CSS 选择器）和触发时显示的文字（`text`）；
-- `waifu.css` 是看板娘的样式表。
-
-`waifu-tips.json` 中默认的 CSS 选择器规则是对 Hexo 的 [NexT 主题](http://github.com/next-theme/hexo-theme-next) 有效的，为了适用于你自己的网页，可能需要自行修改，或增加新内容。  
-**警告：`waifu-tips.json` 中的内容可能不适合所有年龄段，或不宜在工作期间访问。在使用时，请自行确保它们是合适的。**
-
-要在本地部署本项目的开发测试环境，你需要安装 Node.js 和 npm，然后执行以下命令：
-
-```bash
-git clone https://github.com/stevenjoezhang/live2d-widget.git
-npm install
-npm run build
+// CDN API
+new l2dwe.RemoteCdn('https://fastly.jsdelivr.net/gh/fghrsh/live2d_api');
 ```
 
-如果有任何疑问，欢迎提 Issue。如果有任何修改建议，欢迎提 Pull Request。
+如果使用以上两种 API 对象，则请删掉在 URL 末尾的 `/`。
+
+如果你想使用自己的风格 API，那么可以参考 [interface.ts](./src/api/interface.ts) 接口定义来编写。
+
+## 更多
+
+更多内容可以参考：  
+https://nocilol.me/archives/lab/add-dynamic-poster-girl-with-live2d-to-your-blog-02  
+https://github.com/xiazeyu/live2d-widget.js  
+https://github.com/summerscar/live2dDemo
+
+关于后端 API 模型：  
+https://github.com/xiazeyu/live2d-widget-models  
+https://github.com/xiaoski/live2d_models_collection
+
+除此之外，还有桌面版本：  
+https://github.com/amorist/platelet  
+https://github.com/akiroz/Live2D-Widget  
+https://github.com/zenghongtu/PPet  
+https://github.com/LikeNeko/L2dPetForMac
+
+以及 Wallpaper Engine：  
+https://github.com/guansss/nep-live2d
 
 ## 鸣谢
 

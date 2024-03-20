@@ -79,6 +79,7 @@ export async function loadExternalResource(
 
         // Add to DOM
         document.head.appendChild(el);
+        break;
       }
       case ExternalResourceType.Style: {
         // Create element
@@ -92,6 +93,7 @@ export async function loadExternalResource(
 
         // Add to DOM
         document.head.append(el);
+        break;
       }
     }
   });

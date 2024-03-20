@@ -4,7 +4,8 @@
   "description": "Enhanced Live2D widget for web pages",
   "type": "module",
   "scripts": {
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "demo": "serve ."
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
     "@rollup/plugin-typescript": "^11.1.6",
     "@rollup/pluginutils": "^5.1.0",
     "rollup": "^3.29.4",
+    "serve": "^14.2.1",
     "terser": "^5.29.2",
     "tslib": "^2.6.2",
     "typescript": "^5.4.2"

@@ -19,13 +19,19 @@ export class Model {
    * @param tid Texture ID
    * @param msg Tips message
    */
-  public async loadModel(mid: number, tid: number, msg: string): Promise<void> {
+  public async loadModel(
+    mid: number,
+    tid: number,
+    msg?: string
+  ): Promise<void> {
     // Set storage
     localStorage.setItem('modelId', mid.toString());
     localStorage.setItem('modelTexturesId', tid.toString());
 
     // Show message
-    showMsg(msg, 4000, 10);
+    if (msg !== undefined) {
+      showMsg(msg, 4000, 10);
+    }
 
     // Load model
     loadlive2d('live2d', await this.api.get(mid, tid));
@@ -100,7 +106,7 @@ export class Model {
     await this.loadModel(
       mid,
       info.textures.id,
-      info.textures.id === 1 && (mid === 1 || tid === 0)
+      info.textures.id === 0 && tid === 0
         ? '我还没有其他衣服呢！'
         : '我的新衣服好看嘛？'
     );
