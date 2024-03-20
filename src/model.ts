@@ -1,6 +1,7 @@
 /// Model class
 import { showMsg } from './message';
 import { IApi, ModelInfo, TextureInfo } from './api/interface';
+import { prettyLog } from './utils';
 
 /** Model class */
 export class Model {
@@ -28,11 +29,7 @@ export class Model {
 
     // Load model
     loadlive2d('live2d', await this.api.get(mid, tid));
-    console.log(
-      `%cLive2D%c 模型 ${mid}-${tid} 加载完成`,
-      'background:#389ad5;padding:1px 5px;border-radius:3px;color:#fff',
-      ''
-    );
+    prettyLog(`模型 ${mid}-${tid} 加载完成`);
   }
 
   /**

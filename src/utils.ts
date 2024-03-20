@@ -1,6 +1,19 @@
 /// Utils module
 
 /**
+ * Print pretty log
+ *
+ * @param msg Log message
+ */
+export function prettyLog(msg: string): void {
+  console.log(
+    `%cLive2D%c ${msg}`,
+    'background:#389ad5;padding:1px 5px;border-radius:3px;color:#fff',
+    ''
+  );
+}
+
+/**
  * Random select an element from array
  *
  * @param arr Input array
@@ -33,4 +46,53 @@ export function randExcept(min: number, max: number, except: number): number {
       return ret;
     }
   }
+}
+
+/**
+ * External resource type
+ */
+export enum ExternalResourceType {
+  Script,
+  Style
+}
+
+/**
+ * Load external resource
+ *
+ * @param url Resource URL
+ * @param type Resource type
+ */
+export async function loadExternalResource(
+  url: string,
+  type: ExternalResourceType
+): Promise<void> {
+  return new Promise((res, rej): void => {
+    switch (type) {
+      case ExternalResourceType.Script: {
+        // Create element
+        const el: HTMLScriptElement = document.createElement('script');
+        el.src = url;
+
+        // Set callbacks
+        el.onload = (): void => res();
+        el.onerror = (): void => rej();
+
+        // Add to DOM
+        document.head.appendChild(el);
+      }
+      case ExternalResourceType.Style: {
+        // Create element
+        const el: HTMLLinkElement = document.createElement('link');
+        el.rel = 'stylesheet';
+        el.href = url;
+
+        // Set callbacks
+        el.onload = (): void => res();
+        el.onerror = (): void => rej();
+
+        // Add to DOM
+        document.head.append(el);
+      }
+    }
+  });
 }

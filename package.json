@@ -4,8 +4,7 @@
   "description": "Enhanced Live2D widget for web pages",
   "type": "module",
   "scripts": {
-    "build": "rollup -c rollup.config.js",
-    "build-dev": "rollup -c rollup.config.js -w"
+    "build": "node scripts/build.js"
   },
   "repository": {
     "type": "git",
@@ -22,8 +21,10 @@
   "homepage": "https://github.com/SamuNatsu/live2d-widget-enhanced#readme",
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^6.5.1",
+    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
     "@rollup/pluginutils": "^5.1.0",
     "rollup": "^3.29.4",
     "terser": "^5.29.2",
