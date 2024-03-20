@@ -1,31 +1,33 @@
 {
-  "name": "live2d-widget",
-  "version": "0.9.0",
-  "description": "Live2D widget for web pages",
-  "main": "autoload.js",
+  "name": "live2d-widget-enhanced",
+  "version": "0.1.0",
+  "description": "Enhanced Live2D widget for web pages",
   "type": "module",
   "scripts": {
-    "build": "rollup -c rollup.config.js -f iife | terser -c -m > waifu-tips.js",
-    "build-dev": "rollup -c rollup.config.js -f iife -o waifu-tips.js -w"
+    "build": "rollup -c rollup.config.js",
+    "build-dev": "rollup -c rollup.config.js -w"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stevenjoezhang/live2d-widget.git"
+    "url": "git+https://github.com/SamuNatsu/live2d-widget-enhanced.git"
   },
   "keywords": [
     "Live2d"
   ],
-  "author": "stevenjoezhang <stevenjoezhang@gmail.com>",
+  "author": "Rainiar <rainiar@foxmail.com>",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/stevenjoezhang/live2d-widget/issues"
+    "url": "https://github.com/SamuNatsu/live2d-widget-enhanced/issues"
   },
-  "homepage": "https://github.com/stevenjoezhang/live2d-widget#readme",
+  "homepage": "https://github.com/SamuNatsu/live2d-widget-enhanced#readme",
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^6.2.0",
-    "@rollup/plugin-node-resolve": "^15.0.0",
-    "@rollup/pluginutils": "^5.0.1",
-    "rollup": "^3.2.3",
-    "terser": "^5.15.1"
+    "@fortawesome/fontawesome-free": "^6.5.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/pluginutils": "^5.1.0",
+    "rollup": "^3.29.4",
+    "terser": "^5.29.2",
+    "tslib": "^2.6.2",
+    "typescript": "^5.4.2"
   }
 }
