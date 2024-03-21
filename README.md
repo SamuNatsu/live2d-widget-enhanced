@@ -1,7 +1,5 @@
 # Live2D Widget Enhanced
 
-[English](README.en.md)
-
 ![](https://forthebadge.com/images/badges/made-with-typescript.svg)
 ![](https://forthebadge.com/images/badges/built-with-love.svg)
 ![](https://forthebadge.com/images/badges/uses-html.svg)
@@ -72,15 +70,15 @@ l2dwe.init(opt);
 
 |选项|类型|默认值|说明|
 |:---|:---:|:---:|:---|
-|`resource`|`?string`|-|组件资源目录，若未指定则以 `core.min.js` 所在目录作为资源目录|
 |`api`|`IApi`|-|API 接口对象|
-|`tips`|`string\|object`|-|`waifu-tips.json` 文件路径。若提供的是一个对象，则直接使用该对象作为 `waifu-tips.json` 内容|
-|`titleSeparator`|`string`|` - `|标题分隔符，用于将文章标题中的站点名称去除，只提取文章标题|
-|`tools`|`?object`|-|自定义组件工具栏|
 |`defaultModel`|`number`|`0`|默认模型 ID|
 |`defaultTexture`|`number`|`0`|默认贴图 ID|
+|`resource`|`?(string\|object)`|-|组件资源目录|
+|`target`|`?(string\|object)`|-|组件注入目标位置|
+|`titleSeparator`|`(title: string) => string`|`(title) => title.split(' - ')[0]`|标题处理器|
+|`tools`|`?object`|-|自定义组件工具栏|
 
-### API 对象
+### API 接口对象
 
 核心提供了 PHP 风格的 API 对象封装以及 CDN 风格的 API 对象封装，你可以通过如下代码来创建对象：
 
@@ -95,6 +93,97 @@ new l2dwe.RemoteCdn('https://fastly.jsdelivr.net/gh/fghrsh/live2d_api');
 如果使用以上两种 API 对象，则请删掉在 URL 末尾的 `/`。
 
 如果你想使用自己的风格 API，那么可以参考 [interface.ts](./src/api/interface.ts) 接口定义来编写。
+
+### 组件资源目录
+
+组件资源目录配置可以接受一个字符串或者一个对象或者 `undefined`。
+
+若配置为 `undefined`，则以相对于核心 JS 库的位置加载组件资源，假设你的核心 JS 库从以下位置加载，则将自动加载同目录下的资源：
+
+```txt
+-+- core.min.js
+ +- live2d.min.js
+ +- waifu.css
+ `- waifu-tips.json
+```
+
+若配置为字符串，则从字符串所示的 URL 目录处加载组件资源，假设你提供了一个 URL 为 `https://cdn.example.com`，则将加载如下链接的资源：
+
+```txt
+https://cdn.example.com/live2d.min.js
+https://cdn.example.com/waifu.css
+https://cdn.example.com/waifu-tips.json
+```
+
+若配置为对象，则可以进一步细致定义组件资源来源：
+
+```ts
+resources: {
+  css?: string;
+  live2d?: string;
+  tips?: string | Tips;
+};
+```
+
+对于这三个子配置，你可以传入字符串 URL 或者 `undefined`，代表的含义和上面的两种加载方法相同。
+
+对于 `tips` 配置，你还可以手动传入一个 `Tips` 对象来代替外部资源引入。
+
+### 组件注入目标位置
+
+组件注入目标位置可以接受一个字符串或者一个对象或者 `undefined`。
+
+若配置为 `undefined`，则组件将被注入到 `body` 元素内部末尾。
+
+若配置为字符串，则将其认为是一个 CSS 选择器，组件将被注入到该选择器指向的元素内部末尾。
+
+若配置为对象，则可以进一步细致定义组件注入目标位置：
+
+```ts
+target: {
+  toggle?: string;
+  waifu?: string;
+};
+```
+
+对于这两个子配置，你可以传入字符串选择器或者 `undefined`，代表的含义和上面的两种加载方法相同。
+
+其中 `toggle` 为切换组件显示的侧边小按钮，`waifu` 为看板娘本体。
+
+### 标题处理器
+
+你可以提供一个标题处理器来将 `document.title` 获得的标题处理成文章名字。
+
+默认情况下使用的标题处理器可以用于格式为 `%文章名% - %站点名%` 的站点：
+
+```js
+(title) => title.split(' - ')[0]
+```
+
+假如你的标题格式是 `%文章名% | %站点名%`，那么你需要提供如下自定义处理器来获取文章名：
+
+```js
+(title) => title.split(' | ')[0]
+```
+
+### 自定义组件工具栏
+
+与 [live2d-widget](https://github.com/stevenjoezhang/live2d-widget/blob/master/src/model.js) 的自定义组件工具栏类似，通过提供一个对象来将你需要的小工具合并到默认工具栏中。
+
+一个小例子：
+
+```js
+{
+  test: {
+    icon: '<svg>...</svg>',
+    callback: (): void => {
+      console.log('test');
+    }
+  }
+}
+```
+
+你需要给你的自定义工具提供一个 SVG 图标字符串和一个回调函数。
 
 ## 更多
 
