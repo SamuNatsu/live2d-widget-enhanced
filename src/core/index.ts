@@ -85,6 +85,41 @@ async function injectResources(opt: WidgetInitOptions): Promise<void> {
     return curUrl.substring(0, curUrl.lastIndexOf('/')) + '/live2d.min.js';
   })();
 
+  // Get css inject target
+  const cssTarget: string = ((): string => {
+    // If main target given
+    if (typeof opt.target === 'string') {
+      return opt.target;
+    }
+
+    // If css target given
+    if (typeof opt.target === 'object' && typeof opt.target.css === 'string') {
+      return opt.target.css;
+    }
+
+    // Fallback
+    return 'head';
+  })();
+
+  // Get live2d inject target
+  const live2dTarget: string = ((): string => {
+    // If main target given
+    if (typeof opt.target === 'string') {
+      return opt.target;
+    }
+
+    // If live2d target given
+    if (
+      typeof opt.target === 'object' &&
+      typeof opt.target.live2d === 'string'
+    ) {
+      return opt.target.live2d;
+    }
+
+    // Fallback
+    return 'head';
+  })();
+
   // Inject resources
   await Promise.all([
     new Promise((resolve, reject): void => {
@@ -101,7 +136,7 @@ async function injectResources(opt: WidgetInitOptions): Promise<void> {
       };
 
       // Insert into DOM
-      document.head.appendChild(el);
+      document.querySelector(cssTarget)!.appendChild(el);
     }),
     new Promise((resolve, reject): void => {
       // Create element
@@ -117,7 +152,7 @@ async function injectResources(opt: WidgetInitOptions): Promise<void> {
       };
 
       // Insert into DOM
-      document.head.appendChild(el);
+      document.querySelector(live2dTarget)!.appendChild(el);
     })
   ]);
 }

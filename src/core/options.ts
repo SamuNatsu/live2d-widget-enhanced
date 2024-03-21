@@ -16,6 +16,8 @@ export interface WidgetInitOptions {
   target?:
     | string
     | {
+        css?: string;
+        live2d?: string;
         toggle?: string;
         waifu?: string;
       };
