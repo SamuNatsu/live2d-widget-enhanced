@@ -376,7 +376,6 @@ function registerTips(tips: Tips): void {
   }, 1000);
 
   // Register mouse over event listener
-  let lastHoverElement: string;
   window.addEventListener('mouseover', (ev: MouseEvent): void => {
     const el: HTMLElement = ev.target as HTMLElement;
 
@@ -385,12 +384,6 @@ function registerTips(tips: Tips): void {
       if (el.closest(selector) === null) {
         continue;
       }
-
-      // Check & update last hover element
-      if (lastHoverElement === selector) {
-        return;
-      }
-      lastHoverElement = selector;
 
       // Show message
       showMsg(sample(text).replace('{text}', el.innerText), 4000, 8);

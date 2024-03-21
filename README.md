@@ -5,7 +5,7 @@
 ![](https://forthebadge.com/images/badges/uses-html.svg)
 ![](https://forthebadge.com/images/badges/ctrl-c-ctrl-v.svg)
 
-基于 [live2d-widget](https://github.com/stevenjoezhang/live2d-widget/blob/master/src/model.js) 修改的加强版看板娘 Web 组件
+基于 [live2d-widget](https://github.com/stevenjoezhang/live2d-widget) 修改的加强版看板娘 Web 组件
 
 ## 特性
 
@@ -168,7 +168,7 @@ target: {
 
 ### 自定义组件工具栏
 
-与 [live2d-widget](https://github.com/stevenjoezhang/live2d-widget/blob/master/src/model.js) 的自定义组件工具栏类似，通过提供一个对象来将你需要的小工具合并到默认工具栏中。
+与 [live2d-widget](https://github.com/stevenjoezhang/live2d-widget) 的自定义组件工具栏类似，通过提供一个对象来将你需要的小工具合并到默认工具栏中。
 
 一个小例子：
 
@@ -207,7 +207,7 @@ https://github.com/guansss/nep-live2d
 
 ## 鸣谢
 
-感谢 [live2d-widget](https://github.com/stevenjoezhang/live2d-widget/blob/master/src/model.js) 作为本项目的基础
+感谢 [live2d-widget](https://github.com/stevenjoezhang/live2d-widget) 作为本项目的基础
 
 感谢 [jsDelivr](https://www.jsdelivr.com) 提供的 CDN 服务。
 
