@@ -6,35 +6,43 @@ import fa_camera_retro from '@fortawesome/fontawesome-free/svgs/solid/camera-ret
 import fa_info_circle from '@fortawesome/fontawesome-free/svgs/solid/circle-info.svg';
 import fa_xmark from '@fortawesome/fontawesome-free/svgs/solid/xmark.svg';
 
-import { showMsg } from './message.js';
+import { showMsg } from './message';
+import { Model } from './model';
 
-/** Show hitokoto */
-function showHitokoto(): void {
-  fetch('https://v1.hitokoto.cn')
-    .then((res: Response): Promise<any> => res.json())
-    .then((ret: any): void => {
-      const text: string = `这句一言来自 <span>「${ret.from}」</span>，是 <span>${ret.creator}</span> 在 hitokoto.cn 投稿的。`;
-
-      showMsg(ret.hitokoto, 6000, 9);
-      setTimeout((): void => {
-        showMsg(text, 4000, 9);
-      }, 6000);
-    });
+// Types
+export interface Tool {
+  icon: string;
+  callback: Function;
 }
 
-/** Tools */
-export const tools: Record<string, { icon: string; callback: Function }> = {
+// Defualt tools
+const defaultTools: Record<string, Tool> = {
   hitokoto: {
     icon: fa_comment,
-    callback: showHitokoto
+    callback: (): void => {
+      fetch('https://v1.hitokoto.cn')
+        .then((res: Response): Promise<any> => res.json())
+        .then((ret: any): void => {
+          const text: string = `这句一言来自 <span>「${ret.from}」</span>，是 <span>${ret.creator}</span> 在 hitokoto.cn 投稿的。`;
+
+          showMsg(ret.hitokoto, 6000, 9);
+          setTimeout((): void => {
+            showMsg(text, 4000, 9);
+          }, 6000);
+        });
+    }
   },
   'switch-model': {
     icon: fa_user_circle,
-    callback: (): void => {}
+    callback: (): void => {
+      Model.getInstance().loadNextModel();
+    }
   },
   'switch-texture': {
     icon: fa_street_view,
-    callback: (): void => {}
+    callback: (): void => {
+      Model.getInstance().loadNextTexture();
+    }
   },
   photo: {
     icon: fa_camera_retro,
@@ -54,18 +62,14 @@ export const tools: Record<string, { icon: string; callback: Function }> = {
     icon: fa_xmark,
     callback: (): void => {
       // Store time
-      localStorage.setItem('waifu-display', Date.now().toString());
+      localStorage.setItem('l2dwe-quit-time', Date.now().toString());
 
       // Show message
       showMsg('愿你有一天能与重要的人重逢。', 2000, 11);
 
       // Hide widget
-      const waifuEl: HTMLElement = document.querySelector(
-        '#waifu'
-      ) as HTMLElement;
-      const toggleEl: HTMLElement = document.querySelector(
-        '#waifu-toggle'
-      ) as HTMLElement;
+      const waifuEl: HTMLElement = document.querySelector('#waifu')!;
+      const toggleEl: HTMLElement = document.querySelector('#waifu-toggle')!;
 
       waifuEl.style.border = '-500px';
       setTimeout((): void => {
@@ -75,3 +79,12 @@ export const tools: Record<string, { icon: string; callback: Function }> = {
     }
   }
 };
+
+// Get default tools
+export function getDefaultTools(): Record<string, Tool> {
+  const ret: Record<string, Tool> = {};
+  for (const i of Object.keys(defaultTools)) {
+    ret[i] = { ...defaultTools[i] };
+  }
+  return ret;
+}

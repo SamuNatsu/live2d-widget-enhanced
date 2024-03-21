@@ -1,16 +1,34 @@
 /// Model class
 import { showMsg } from './message';
-import { IApi, ModelInfo, TextureInfo } from './api/interface';
-import { prettyLog } from './utils';
+import { IApi, ModelInfo, TextureInfo } from '../api/interface';
+import { prettyLog } from '../utils';
 
 /** Model class */
 export class Model {
+  private static instance?: Model;
+
+  /**
+   * Get singleton
+   *
+   * @param api API interface for constructor
+   * @returns Model singleton
+   */
+  public static getInstance(api?: IApi): Model {
+    if (api !== undefined) {
+      Model.instance = new Model(api);
+    }
+    if (Model.instance === undefined) {
+      throw Error('Model instance not initialized');
+    }
+    return Model.instance;
+  }
+
   /**
    * Constructor
    *
    * @param api API interface
    */
-  public constructor(private api: IApi) {}
+  private constructor(private api: IApi) {}
 
   /**
    * Load model
@@ -25,8 +43,8 @@ export class Model {
     msg?: string
   ): Promise<void> {
     // Set storage
-    localStorage.setItem('modelId', mid.toString());
-    localStorage.setItem('modelTexturesId', tid.toString());
+    localStorage.setItem('l2dwe-model-id', mid.toString());
+    localStorage.setItem('l2dwe-texture-id', tid.toString());
 
     // Show message
     if (msg !== undefined) {
@@ -43,7 +61,7 @@ export class Model {
    */
   public async loadRandModel() {
     // Load storage
-    const mid: number = parseInt(localStorage.getItem('modelId') ?? '1');
+    const mid: number = parseInt(localStorage.getItem('l2dwe-model-id')!);
 
     // Load model info
     const info: ModelInfo = await this.api.rand(mid);
@@ -57,7 +75,7 @@ export class Model {
    */
   public async loadNextModel() {
     // Load storage
-    const mid: number = parseInt(localStorage.getItem('modelId') ?? '1');
+    const mid: number = parseInt(localStorage.getItem('l2dwe-model-id')!);
 
     // Load model info
     const info: ModelInfo = await this.api.switch(mid);
@@ -71,10 +89,8 @@ export class Model {
    */
   public async loadRandTexture() {
     // Load storage
-    const mid: number = parseInt(localStorage.getItem('modelId') ?? '1');
-    const tid: number = parseInt(
-      localStorage.getItem('modelTexturesId') ?? '0'
-    );
+    const mid: number = parseInt(localStorage.getItem('l2dwe-model-id')!);
+    const tid: number = parseInt(localStorage.getItem('l2dwe-texture-id')!);
 
     // Load texture info
     const info: TextureInfo = await this.api.randTexture(mid, tid);
@@ -83,7 +99,7 @@ export class Model {
     await this.loadModel(
       mid,
       info.textures.id,
-      info.textures.id === 1 && (mid === 1 || tid === 0)
+      info.textures.id === 0 && tid === 0
         ? '我还没有其他衣服呢！'
         : '我的新衣服好看嘛？'
     );
@@ -94,10 +110,8 @@ export class Model {
    */
   public async loadNextTexture() {
     // Load storage
-    const mid: number = parseInt(localStorage.getItem('modelId') ?? '1');
-    const tid: number = parseInt(
-      localStorage.getItem('modelTexturesId') ?? '0'
-    );
+    const mid: number = parseInt(localStorage.getItem('l2dwe-model-id')!);
+    const tid: number = parseInt(localStorage.getItem('l2dwe-texture-id')!);
 
     // Load texture info
     const info: TextureInfo = await this.api.switchTexture(mid, tid);

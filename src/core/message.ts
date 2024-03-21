@@ -1,8 +1,8 @@
 /// Message module
-import { sample } from './utils';
+import { sample } from '../utils';
 
 /** Timeout ID */
-let timeoutID: number | null = null;
+let timeoutId: number | null = null;
 
 /**
  * Show message
@@ -18,32 +18,32 @@ export function showMsg(
 ): void {
   // Check priority
   const oldPriority: number = parseInt(
-    sessionStorage.getItem('waifu-text') ?? Number.MIN_SAFE_INTEGER.toString()
+    sessionStorage.getItem('l2dwe-msg-priority')!
   );
   if (oldPriority > priority) {
     return;
   }
 
   // Clear timeout
-  if (timeoutID !== null) {
-    clearTimeout(timeoutID);
-    timeoutID = null;
+  if (timeoutId !== null) {
+    clearTimeout(timeoutId);
+    timeoutId = null;
   }
 
   // Select text
-  const selText: string = text instanceof Array ? sample(text) : text;
+  const selText: string = Array.isArray(text) ? sample(text) : text;
 
   // Set priority
-  sessionStorage.setItem('waifu-text', priority.toString());
+  sessionStorage.setItem('l2dwe-msg-priority', priority.toString());
 
   // Set tip
-  const el: HTMLElement = document.querySelector('#waifu-tips') as HTMLElement;
+  const el: HTMLElement = document.querySelector('#waifu-tips')!;
   el.innerHTML = selText;
   el.classList.add('waifu-tips-active');
 
   // Set duration
-  timeoutID = setTimeout((): void => {
-    sessionStorage.removeItem('waifu-text');
+  timeoutId = setTimeout((): void => {
+    sessionStorage.removeItem('l2dwe-msg-priority');
     el.classList.remove('waifu-tips-active');
   }, duration);
 }

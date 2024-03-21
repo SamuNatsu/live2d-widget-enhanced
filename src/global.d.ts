@@ -1,4 +1,4 @@
-/// Type define
+/// Global type define
 
 // Load Live2D
 declare function loadlive2d(elementId: string, jsonUrl: string): void;
@@ -6,7 +6,7 @@ declare function loadlive2d(elementId: string, jsonUrl: string): void;
 // Live2D framework
 declare const Live2D: any;
 
-// Font awesome types
+// Font awesome SVGs
 declare module '*.svg' {
   const content: string;
   export default content;

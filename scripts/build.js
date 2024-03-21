@@ -47,7 +47,7 @@ function svgLoader() {
 // Build core.min.js
 {
   const bundle = await rollup({
-    input: 'src/core.ts',
+    input: 'src/core/index.ts',
     plugins: [json(), svgLoader(), typescript(), nodeResolve()]
   });
 
