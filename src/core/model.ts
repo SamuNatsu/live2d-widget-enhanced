@@ -1,7 +1,7 @@
 /// Model class
 import { showMsg } from './message';
 import { IApi, ModelInfo, TextureInfo } from '../api/interface';
-import { prettyLog } from '../utils';
+import { Logger } from './logger';
 
 /** Model class */
 export class Model {
@@ -53,7 +53,7 @@ export class Model {
 
     // Load model
     loadlive2d('live2d', await this.api.get(mid, tid));
-    prettyLog(`模型 ${mid}-${tid} 加载完成`);
+    Logger.info(`模型 ${mid}-${tid} 加载完成`);
   }
 
   /**

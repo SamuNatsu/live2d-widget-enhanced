@@ -14,6 +14,10 @@ export async function init(opt: WidgetInitOptions): Promise<void> {
   // Inject resources
   await injectResources(opt);
 
+  // Print info
+  Logger.info(`Version: ${version}`);
+  Logger.info('Github: https://github.com/SamuNatsu/live2d-widget-enhanced');
+
   // Inject toggle
   injectToggle(opt);
 }
@@ -38,8 +42,6 @@ function printWelcome(): void {
                 ﾄ-,/  |___./
                 'ｰ'    !_,.:
 加强版 Live2D 看板娘组件 | Live2D Widget Enhanced`);
-  Logger.info(`Version: ${version}`);
-  Logger.info('Github: https://github.com/SamuNatsu/live2d-widget-enhanced');
 }
 
 async function injectResources(opt: WidgetInitOptions): Promise<void> {
