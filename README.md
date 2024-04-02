@@ -133,7 +133,7 @@ resources: {
 
 组件注入目标位置可以接受一个字符串或者一个对象或者 `undefined`。
 
-若配置为 `undefined`，则组件将被注入到 `body` 元素内部末尾。
+若配置为 `undefined`，则 HTML 组件将被注入到 `body` 元素内部末尾，脚本和 CSS 将被注入到 `head` 元素末尾。
 
 若配置为字符串，则将其认为是一个 CSS 选择器，组件将被注入到该选择器指向的元素内部末尾。
 
@@ -141,14 +141,16 @@ resources: {
 
 ```ts
 target: {
+  css?: string;
+  live2d?: string;
   toggle?: string;
   waifu?: string;
 };
 ```
 
-对于这两个子配置，你可以传入字符串选择器或者 `undefined`，代表的含义和上面的两种加载方法相同。
+对于这四个子配置，你可以传入字符串选择器或者 `undefined`，代表的含义和上面的两种加载方法相同。
 
-其中 `toggle` 为切换组件显示的侧边小按钮，`waifu` 为看板娘本体。
+其中 `css` 为组件的 CSS，`live2d` 为 Live2D 核心脚本语句， `toggle` 为切换组件显示的侧边小按钮，`waifu` 为看板娘本体。
 
 ### 标题处理器
 
@@ -184,6 +186,54 @@ target: {
 ```
 
 你需要给你的自定义工具提供一个 SVG 图标字符串和一个回调函数。
+
+### Waifu Tips 扩展内容
+
+为了功能的需要，l2dwe 对 `waifu-tips.json` 的格式进行了拓展，可以兼容原 `waifu-tips.json` 的格式。
+
+具体的来讲，是将 `click` 和 `mouseover` 两个事件选择器定义中增加了 `subselector` 这个选项：
+
+```ts
+export interface Tips {
+  click: {
+    selector: string;
+    subselector?: string;  // New
+    text: string | string[];
+  }[];
+  mouseover: {
+    selector: string;
+    subselector?: string;  // New
+    text: string | string[];
+  }[];
+  message: {
+    console: string | string[];
+    copy: string | string[];
+    default: string | string[];
+    visibilitychange: string | string[];
+  };
+  seasons: {
+    date: string;
+    text: string | string[];
+  }[];
+  time: {
+    hour: string;
+    text: string | string[];
+  }[];
+}
+```
+
+有时候只使用 `selector` 获取元素的 `innerText` 可能会把元素子元素中你不想一起显示的内容一起输出，如：
+
+```html
+<div class="text">
+  <span>Test</span>
+  <svg>...</svg>
+</div>
+```
+
+当你想将整个 `.text` 元素作为触发器时，内部的部分 SVG 代码也会被输出。
+
+通过 `subselector` 你可以进一步指定你需要获取到的 `innerText` 来自哪个子元素。
 
 ## 更多
 
