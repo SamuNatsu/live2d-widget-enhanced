@@ -1,36 +1,40 @@
 /// Utils module
 
 /**
- * Random select an element from array
+ * Random select an element
  *
- * @param arr Input array
- * @returns Output element
+ * @param obj Input object
+ * @returns Random selected element when `obj` is an array, otherwise return back `obj`
  */
-export function sample(arr: any[]): any {
-  return arr[Math.floor(Math.random() * arr.length)];
+export function randSelect<T>(obj: T | T[]): T {
+  return Array.isArray(obj) ? obj[Math.floor(Math.random() * obj.length)] : obj;
 }
 
 /**
- * Get random integer from range but except one number
+ * Parse date duration from string
  *
- * @param min Min number
- * @param max Max number
- * @param except Except number
- * @returns Random number
+ * @param str Duration string
+ * @returns From `[0][0]`/`[0][1]` to `[1][0]`/`[1][1]`
  */
-export function randExcept(min: number, max: number, except: number): number {
-  min = Math.floor(min);
-  max = Math.floor(max);
-  except = Math.floor(except);
+export function parseDuration(
+  str: string
+): [[number, number], [number, number]] {
+  const from: string = str.split('-')[0];
+  const to: string = str.split('-')[1] ?? from;
 
-  if (max - min === 1 && except === min) {
-    return except;
-  }
+  return [
+    [parseInt(from.split('/')[0]), parseInt(from.split('/')[1])],
+    [parseInt(to.split('/')[0]), parseInt(to.split('/')[1])]
+  ];
+}
 
-  while (true) {
-    const ret: number = Math.floor(Math.random() * (max - min)) + min;
-    if (ret !== except) {
-      return ret;
-    }
-  }
+/**
+ * Test a value is in given range
+ *
+ * @param val Value to be tested
+ * @param min Min value
+ * @param max Max value
+ */
+export function inRange(val: number, min: number, max: number): boolean {
+  return min <= val && val <= max;
 }

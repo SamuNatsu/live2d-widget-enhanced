@@ -1,7 +1,7 @@
 /// Model class
-import { showMsg } from './message';
-import { IApi, ModelInfo, TextureInfo } from '../api/interface';
-import { Logger } from './logger';
+import { IApi, ModelInfo, TextureInfo } from '@api/interface';
+import { Logger } from '@core/logger';
+import { showMsg } from '@core/message';
 
 /** Model class */
 export class Model {
@@ -16,9 +16,10 @@ export class Model {
   public static getInstance(api?: IApi): Model {
     if (api !== undefined) {
       Model.instance = new Model(api);
+      Logger.info('模型单例初始化完毕');
     }
     if (Model.instance === undefined) {
-      throw Error('Model instance not initialized');
+      throw Error('模型单例未初始化');
     }
     return Model.instance;
   }

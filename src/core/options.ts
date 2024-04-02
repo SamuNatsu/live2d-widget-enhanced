@@ -1,7 +1,9 @@
 /// Options module
-import { IApi } from '../api/interface';
-import { Tool } from './tools';
+import { IApi } from '@api/interface';
+import { Tips } from '@core/tips';
+import { Tool } from '@core/tools';
 
+// Types
 export interface WidgetInitOptions {
   api: IApi;
   defaultModel?: number;
@@ -23,29 +25,4 @@ export interface WidgetInitOptions {
       };
   titleSeparator?: (title: string) => string;
   tools?: Record<string, Tool>;
-}
-
-export interface Tips {
-  click: {
-    selector: string;
-    text: string[];
-  }[];
-  message: {
-    console: string;
-    copy: string;
-    default: string[];
-    visibilitychange: string[];
-  };
-  mouseover: {
-    selector: string;
-    text: string[];
-  }[];
-  seasons: {
-    date: string;
-    text: string[];
-  }[];
-  time: {
-    hour: string;
-    text: string;
-  }[];
 }

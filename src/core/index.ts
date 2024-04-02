@@ -1,13 +1,15 @@
 /// Core module
-import { Tips, WidgetInitOptions } from './options';
-import { Logger } from './logger';
 import { version } from '../../package.json';
-import { Model } from './model';
-import { Tool, getDefaultTools } from './tools';
-import { showMsg } from './message';
-import { sample } from '../utils';
 
-export async function init(opt: WidgetInitOptions): Promise<void> {
+import { inRange, parseDuration, randSelect } from '@/utils';
+import { Logger } from '@core/logger';
+import { showMsg } from '@core/message';
+import { Model } from '@core/model';
+import { WidgetInitOptions } from '@core/options';
+import { Tips, regTipsEvListeners } from '@core/tips';
+import { Tool, getDefaultTools } from '@core/tools';
+
+export const init = async (opt: WidgetInitOptions): Promise<void> => {
   // Print welcome
   printWelcome();
 
@@ -20,7 +22,7 @@ export async function init(opt: WidgetInitOptions): Promise<void> {
 
   // Inject toggle
   injectToggle(opt);
-}
+};
 
 function printWelcome(): void {
   console.log(`
@@ -358,107 +360,10 @@ async function loadTips(opt: WidgetInitOptions): Promise<void> {
   })();
 
   // Register tips event listeners
-  registerTips(tips);
+  regTipsEvListeners(tips);
 
   // Show welcome
   showMsg(getWelcomeMsg(opt, tips), 7000, 11);
-}
-
-function registerTips(tips: Tips): void {
-  const messagePool: string[] = tips.message.default;
-
-  // Append season message
-  tips.seasons.forEach(({ date, text }): void => {
-    const now: Date = new Date();
-    const after: string = date.split('-')[0];
-    const before: string = date.split('-')[1] ?? after;
-
-    if (
-      parseInt(after.split('/')[0]) <= now.getMonth() + 1 &&
-      now.getMonth() + 1 <= parseInt(before.split('/')[0]) &&
-      parseInt(after.split('/')[1]) <= now.getDate() &&
-      now.getDate() <= parseInt(before.split('/')[1])
-    ) {
-      messagePool.push(
-        sample(text).replace('{year}', now.getFullYear().toString())
-      );
-    }
-  });
-
-  // User action detect
-  let userAction: boolean = false;
-  let userActionIntervalId: number | null = null;
-
-  window.addEventListener('mousemove', (): void => {
-    userAction = true;
-  });
-  window.addEventListener('keydown', (): void => {
-    userAction = true;
-  });
-
-  setInterval((): void => {
-    if (userAction) {
-      // Clear detection
-      userAction = false;
-      clearInterval(userActionIntervalId!);
-      userActionIntervalId = null;
-    } else if (userActionIntervalId === null) {
-      // Show idle message loop per 20s
-      userActionIntervalId = setInterval((): void => {
-        showMsg(messagePool, 6000, 9);
-      }, 20000);
-    }
-  }, 1000);
-
-  // Register mouse over event listener
-  window.addEventListener('mouseover', (ev: MouseEvent): void => {
-    const el: HTMLElement = ev.target as HTMLElement;
-
-    for (const { selector, text } of tips.mouseover) {
-      // If selector not match
-      if (el.closest(selector) === null) {
-        continue;
-      }
-
-      // Show message
-      showMsg(sample(text).replace('{text}', el.innerText), 4000, 8);
-      return;
-    }
-  });
-
-  // Register click event lisener
-  window.addEventListener('click', (ev: MouseEvent): void => {
-    const el: HTMLElement = ev.target as HTMLElement;
-
-    for (const { selector, text } of tips.click) {
-      // If selector not match
-      if (el.closest(selector) === null) {
-        continue;
-      }
-
-      // Show message
-      showMsg(sample(text).replace('{text}', el.innerText), 4000, 8);
-      return;
-    }
-  });
-
-  // On open console
-  const devtools: Function = (): void => {};
-  console.log('%c', devtools);
-  devtools.toString = (): string => {
-    showMsg(tips.message.console, 6000, 9);
-    return '';
-  };
-
-  // On copy
-  window.addEventListener('copy', (): void => {
-    showMsg(tips.message.copy, 6000, 9);
-  });
-
-  // On visibility change
-  window.addEventListener('visibilitychange', (): void => {
-    showMsg(tips.message.visibilitychange, 6000, 9);
-  });
 }
 
 function getWelcomeMsg(opt: WidgetInitOptions, tips: Tips): string {
@@ -466,11 +371,10 @@ function getWelcomeMsg(opt: WidgetInitOptions, tips: Tips): string {
   if (location.pathname === '/') {
     for (let { hour, text } of tips.time) {
       const now: Date = new Date();
-      const after: number = parseInt(hour.split('-')[0]);
-      const before: number = parseInt(hour.split('-')[1] ?? after);
+      const [from, to] = parseDuration(hour);
 
-      if (after <= now.getHours() && now.getHours() <= before) {
-        return text;
+      if (inRange(now.getHours(), from[0], to[0])) {
+        return randSelect(text);
       }
     }
   }
@@ -512,7 +416,7 @@ function getWelcomeMsg(opt: WidgetInitOptions, tips: Tips): string {
 }
 
 // Re-export
-export * from '../api/remote-api';
-export * from '../api/remote-cdn';
-export * from '../core/message';
-export * from '../core/model';
+export * from '@api/remote-api';
+export * from '@api/remote-cdn';
+export * from '@core/message';
+export * from '@core/model';

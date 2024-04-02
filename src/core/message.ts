@@ -1,7 +1,7 @@
 /// Message module
-import { sample } from '../utils';
+import { randSelect } from '@/utils';
 
-/** Timeout ID */
+// Timeout ID
 let timeoutId: number | null = null;
 
 /**
@@ -11,11 +11,11 @@ let timeoutId: number | null = null;
  * @param duration Message duration
  * @param priority Message priority
  */
-export function showMsg(
+export const showMsg = (
   text: string | string[],
   duration: number,
   priority: number
-): void {
+): void => {
   // Check priority
   const oldPriority: number = parseInt(
     sessionStorage.getItem('l2dwe-msg-priority')!
@@ -30,15 +30,12 @@ export function showMsg(
     timeoutId = null;
   }
 
-  // Select text
-  const selText: string = Array.isArray(text) ? sample(text) : text;
-
   // Set priority
   sessionStorage.setItem('l2dwe-msg-priority', priority.toString());
 
   // Set tip
   const el: HTMLElement = document.querySelector('#waifu-tips')!;
-  el.innerHTML = selText;
+  el.innerHTML = randSelect(text);
   el.classList.add('waifu-tips-active');
 
   // Set duration
@@ -46,4 +43,4 @@ export function showMsg(
     sessionStorage.removeItem('l2dwe-msg-priority');
     el.classList.remove('waifu-tips-active');
   }, duration);
-}
+};

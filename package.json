@@ -1,6 +1,6 @@
 {
   "name": "live2d-widget-enhanced",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Enhanced Live2D widget for web pages",
   "type": "module",
   "scripts": {
@@ -22,6 +22,7 @@
   "homepage": "https://github.com/SamuNatsu/live2d-widget-enhanced#readme",
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^6.5.1",
+    "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
@@ -29,7 +30,7 @@
     "@rollup/pluginutils": "^5.1.0",
     "rollup": "^3.29.4",
     "serve": "^14.2.1",
-    "terser": "^5.29.2",
+    "terser": "^5.30.0",
     "tslib": "^2.6.2",
     "typescript": "^5.4.3"
   }
